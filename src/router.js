@@ -1,25 +1,46 @@
+/* eslint-disable */
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 
 Vue.use(Router);
 
+function load(componentName) {
+    return () =>
+        import (`./${componentName}.vue`)
+}
+
 export default new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
-    },
-  ],
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [{
+            path: '/',
+            component: load('views/WelcomePage'),
+        },
+        {
+            path: '/home',
+            component: Home,
+            children: [{
+                    path: 'pageOne',
+                    name: 'pageOne',
+                    component: load('components/PageOne'),
+                },
+                {
+                    path: 'pageTwo',
+                    name: 'pageThree',
+                    component: load('components/PageTwo')
+                },
+                {
+                    path: 'pageTwo/:parameter',
+                    name: 'pageTwoWithParameters',
+                    component: load('components/PageTwo')
+                },
+                {
+                    path: 'pageThree',
+                    name: 'pageThree',
+                    component: load('components/PageThree')
+                }
+            ]
+        },
+    ],
 });
